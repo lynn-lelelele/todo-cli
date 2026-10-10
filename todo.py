@@ -50,21 +50,19 @@ def done_task(tasks, number):
         content["done"] = True
 
 
+def delete_task(tasks, number):
+    tasks.pop(number-1)
+    
+    
 
+    
 tasks = [
     {"text": "买牛奶", "done": False},
-    {"text": "写作业", "done": False},
+    {"text": "写作业", "done": True},
     {"text": "打电话", "done": False},
 ]
-
-done_task(tasks, 2)
+delete_task(tasks, 2)
 print(tasks)
-
-    
-    
-
-    
-
     
     
 
