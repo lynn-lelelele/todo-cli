@@ -1,5 +1,1 @@
-[
-    {"text" : "买牛奶","done":false},
-    {"text" : "写作业","done":true}
-]
-
+[{"text": "买牛奶", "done": false}, {"text": "写作业", "done": true}]
