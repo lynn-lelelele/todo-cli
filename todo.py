@@ -44,7 +44,21 @@ def add_task(tasks, text):#增加一个未完成的事项
         "done":False,
     })
 
+def done_task(tasks, number):
+    content = tasks[number-1]
+    if content["done"] == False:
+        content["done"] = True
 
+
+
+tasks = [
+    {"text": "买牛奶", "done": False},
+    {"text": "写作业", "done": False},
+    {"text": "打电话", "done": False},
+]
+
+done_task(tasks, 2)
+print(tasks)
 
     
     
