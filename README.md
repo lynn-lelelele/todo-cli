@@ -1,80 +1,91 @@
-# todo-cli · 命令行待办清单
+# todo-cli
 
-> **这是你第一个"自己写"的项目。**
-> 规则：只给需求，不给代码。卡住了先自己想 30 分钟，再查文档，再查 AI。
+A small command-line to-do list in pure Python. Tasks are stored in a JSON file next to the script, so they survive restarts.
 
----
+**This is my first project written from scratch** — no tutorial to follow, no AI-generated code.
+I wrote the spec, designed the data format, and implemented every function myself, then fixed four bugs with the debugger workflow (`path` ordering, a typo, a UTF-8 error, and a missing JSON comma).
 
-## 需求
+## Features
 
-一个命令行程序，管理你的待办事项。
+- Add a task
+- List every task with its number and status
+- Mark a task as done
+- Delete a task
+- Data persists in `task.json`
+- Handles bad input instead of crashing: missing file, empty file, corrupt JSON, out-of-range numbers, non-numeric input
 
-### 必须有的功能
+## Usage
 
-| # | 功能 | 说明 |
-|---|---|---|
-| 1 | **添加任务** | 输入一段文字，加进清单 |
-| 2 | **查看清单** | 打印所有任务，带序号和状态 |
-| 3 | **标记完成** | 按序号把某条标记为完成 |
-| 4 | **删除任务** | 按序号删掉某条 |
-| 5 | **按状态筛选** | 只看未完成 / 只看已完成 |
-| 6 | **持久化** | 数据存 JSON 文件，关掉再打开还在 |
+```bash
+python todo.py
+```
 
-### 界面参考（具体你自己定）
+The interface is in Chinese. A session looks like this:
 
 ```
-待办清单
+> list
   1. [ ] 买牛奶
-  2. [x] 交作业
+  2. [x] 写作业
   3. [ ] 打电话
 
-> add 写周报
-已添加：写周报
+> add
+要加什么：买水果
+已添加：买水果
 
-> done 1
-已完成：买牛奶
+> done
+要完成第几条：1
+第 1 条已完成。
 
-> list undone
-  1. [ ] 打电话
-  2. [ ] 写周报
+> del
+要删除第几条：3
+第 3 条已删除。
 
 > quit
 ```
 
-### 技术要求
+## Commands
 
-- **纯 Python**，不用第三方库
-- **拆成多个函数**，不要全堆在 `main()` 里
-- 数据文件命名 `tasks.json`
+| Command | What it does |
+|---|---|
+| `list` | show every task |
+| `add` | add a task — then asks for the text |
+| `done` | mark a task complete — then asks for the number |
+| `del` | delete a task — then asks for the number |
+| `quit` | exit |
 
-### 不要做的事
+Unknown commands print a hint instead of crashing.
 
-- ❌ 不要用 AI 生成整个程序
-- ❌ 不要复制网上的完整实现
+## Requirements
 
-### 可以做的事
+Python 3.10 or newer. No third-party packages.
 
-- ✅ 查官方文档：`json`、`pathlib`、字符串方法
-- ✅ 翻你自己的笔记：`Desktop\python_notes\08_文件与JSON\`
-- ✅ 卡住了问我 —— 但我会先问你「你觉得应该是什么样」
+## Files
 
----
+| File | Purpose |
+|---|---|
+| `todo.py` | the whole program |
+| `task.json` | where tasks are stored (created on first save) |
 
-## 进度
+## Design notes
 
-- [ ] **设计数据结构** ← 现在这里
-- [ ] 读写 JSON 文件
-- [ ] 添加 + 查看
-- [ ] 标记完成 + 删除
-- [ ] 筛选
-- [ ] 命令行循环
-- [ ] 写英文 README
-- [ ] 加测试
+- `load_tasks()` and `save_tasks()` are the **only** functions that touch the file. Everything else works on a plain Python list.
+- **Task numbers are not stored in the JSON.** They are generated at display time from the list index (`enumerate(tasks, start=1)`), so deleting a task never leaves a stale number behind.
+- `done_task()` and `delete_task()` return `False` when the number is out of range, instead of raising an exception.
+- `load_tasks()` treats a missing, empty, or corrupt file as "no tasks" and carries on.
 
----
+## Bug notes
 
-## 相关
+The four bugs I hit while building this, and what they taught me:
 
-- 4 个月计划：`Desktop\06-实习准备\02-编程计划.md`
-- 你的 JSON 笔记：`Desktop\python_notes\08_文件与JSON\`
-- 你的字典笔记：`Desktop\python_notes\03_容器类型\43_字典dict.py`
+| Bug | Lesson |
+|---|---|
+| `UnboundLocalError: path` | A variable assigned inside an `if` block is local to the whole function — assign before you use it |
+| `UnicodeDecodeError: gbk codec` | `Path.read_text()` needs `encoding="utf-8"` on Windows, or any non-ASCII text breaks |
+| `json.load()` on a string | `json.load()` takes a **file object**; `json.loads()` takes a **string** |
+| Missing comma in JSON | JSON is strict — two objects in a list need a comma between them |
+
+And a fifth, found while testing:
+
+| Bug | Lesson |
+|---|---|
+| `if path.exists:` | Without `()`, that is the method object — always truthy — so the branch always runs. Silent, no error. Same trap as writing `==` instead of `=`. |
