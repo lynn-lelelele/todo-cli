@@ -32,7 +32,7 @@ def show_tasks(tasks):
     #让列表变得更加容易读，展示出来
     for i, task in enumerate(tasks, start=1):  
         if task["done"] == True:
-            a = "x"
+            a = "yes"
         else:
             a = " "   
 
@@ -54,15 +54,42 @@ def delete_task(tasks, number):
     tasks.pop(number-1)
     
     
+def main():
+    tasks = load_tasks()
 
-    
-tasks = [
-    {"text": "买牛奶", "done": False},
-    {"text": "写作业", "done": True},
-    {"text": "打电话", "done": False},
-]
-delete_task(tasks, 2)
-print(tasks)
+    while True:
+        line = input("> ")
+        parts = line.split()
+
+        if not parts:
+            continue
+
+        command = parts[0]
+
+        if command == "quit":
+            break
+
+        elif command == "list":
+            show_tasks(tasks)
+
+        elif command == "add":
+            text = input("需要加入的事项")
+            add_task(tasks, text)           
+            save_tasks(tasks)
+
+        elif command == "done":
+            number =int(input("需要完成哪一个任务"))
+            done_task(tasks, number)          
+            save_tasks(tasks)
+
+        elif command == "del":
+            num = int(input("需要删除哪一个任务"))
+            delete_task(tasks, num)        
+            save_tasks(tasks)
+
+
+if __name__ == "__main__":
+    main()
     
     
 
