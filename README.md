@@ -1,5 +1,7 @@
 # todo-cli
 
+![CI](https://github.com/lynn-lelelele/todo-cli/actions/workflows/ci.yml/badge.svg)
+
 A small command-line to-do list in pure Python. Tasks are stored in a JSON file next to the script, so they survive restarts.
 
 **This is my first project written from scratch** — no tutorial to follow, no AI-generated code.
@@ -55,6 +57,13 @@ The interface is in Chinese. A session looks like this:
 
 Unknown commands print a hint instead of crashing.
 
+## Tests
+
+```bash
+python -m unittest -v```
+
+12 unit tests covering file I/O, round-trip persistence, bad input, and out-of-range numbers. They run in CI on every push.
+
 ## Requirements
 
 Python 3.10 or newer. No third-party packages.
@@ -89,3 +98,4 @@ And a fifth, found while testing:
 | Bug | Lesson |
 |---|---|
 | `if path.exists:` | Without `()`, that is the method object — always truthy — so the branch always runs. Silent, no error. Same trap as writing `==` instead of `=`. |
+
